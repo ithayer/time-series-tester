@@ -41,7 +41,6 @@ public class HyphotesisTesterImpl implements HyphotesisTester {
 		double diff = averageBefore - averageAfter;
 		double total = sumBefore + sumAfter;
 		final boolean firstPeriodHigher = averageBefore > averageAfter;
-		
 
 		int moreExtremeSample = 0; // the number of samples that have a
 									// difference higher than the one in the
@@ -69,19 +68,20 @@ public class HyphotesisTesterImpl implements HyphotesisTester {
 			double randomAverageAfter = randomSumAfter / pointsAfter;
 
 			double randomDiff = randomAverageBefore - randomAverageAfter;
-			
-			if (firstPeriodHigher){
-				if (randomDiff > diff){
+
+			if (firstPeriodHigher) {
+				if (randomDiff > diff) {
 					moreExtremeSample++;
 				}
-			}else{
-				if (randomDiff < diff){
+			} else {
+				if (randomDiff < diff) {
 					moreExtremeSample++;
 				}
 			}
 		}
 		double pValue = ((double) moreExtremeSample) / ((double) runs);
-		return new HyphotesisResult(firstPeriodHigher, pValue, averageBefore, averageAfter);
+		return new HyphotesisResult(firstPeriodHigher, pValue, averageBefore,
+				averageAfter);
 	}
 
 	public void setRuns(int runs) {
@@ -104,27 +104,81 @@ public class HyphotesisTesterImpl implements HyphotesisTester {
 	@Override
 	public HyphotesisResult test(List<List<TimePoint>> firstGroup,
 			List<List<TimePoint>> secondGroup) {
-		
-		List<TimePoint> allUsers = new ArrayList<TimePoint>(); //alle theusers group a before and goup b after
-		
+
+		List<TimePoint> allUsers = new ArrayList<TimePoint>(); // alle theusers
+																// group a
+																// before and
+																// goup b after
+
 		int index = 0;
-		for (List<TimePoint> user : firstGroup){
+		for (List<TimePoint> user : firstGroup) {
 			allUsers.add(aggregate(user, index));
 			index++;
 		}
-		for (List<TimePoint> user : secondGroup){
+		for (List<TimePoint> user : secondGroup) {
 			allUsers.add(aggregate(user, index));
 			index++;
 		}
 		return this.test(allUsers, firstGroup.size());
 	}
 
-	private static TimePoint aggregate(List<TimePoint> user, int index){
+	private static TimePoint aggregate(List<TimePoint> user, int index) {
 		double value = 0.0;
-		for (TimePoint point : user){
+		for (TimePoint point : user) {
 			value += point.getValue();
 		}
 		return new TimePoint(index, value);
 	}
-	
+
+	@Override
+	public HyphotesisResult test(List<List<TimePoint>> firstGroup,
+			List<List<TimePoint>> secondGroup, int timeIndexTransition) {
+
+		Groups initialGroups = new Groups(firstGroup, secondGroup);
+		double rr = getRatioOfRatio(initialGroups, timeIndexTransition);
+		boolean firstPeriodHigher = rr > 1;
+
+		int moreExtreme = 0;
+
+		for (int run = 0; run < runs; run++) {
+			Groups shuffledGroup = shuffle(initialGroups, timeIndexTransition);
+			double sampleRR = getRatioOfRatio(shuffledGroup,
+					timeIndexTransition);
+			if (firstPeriodHigher) {
+				if (sampleRR > rr) {
+					moreExtreme++;
+				}
+			} else {
+				if (sampleRR < rr) {
+					moreExtreme++;
+				}
+			}
+		}
+
+		double pValue = ((double) moreExtreme) / runs;
+		return new HyphotesisResult(firstPeriodHigher, pValue);
+	}
+
+	private static double getRatioOfRatio(Groups groups, int timeIndexTransition) {
+
+		return 0;
+	}
+
+	private static Groups shuffle(Groups groups, int timeIndexTransition) {
+
+		return null;
+	}
+
+	private static class Groups {
+		public List<List<TimePoint>> firstGroup;
+		public List<List<TimePoint>> secondGroup;
+
+		public Groups(List<List<TimePoint>> firstGroup,
+				List<List<TimePoint>> secondGroup) {
+			this.firstGroup = firstGroup;
+			this.secondGroup = secondGroup;
+		}
+
+	}
+
 }
