@@ -160,13 +160,114 @@ public class HyphotesisTesterImpl implements HyphotesisTester {
 	}
 
 	private static double getRatioOfRatio(Groups groups, int timeIndexTransition) {
-
-		return 0;
+		double sumABefore = 0;
+		double sumBBefore = 0;
+		double sumAAfter = 0;
+		double sumBAfter = 0;
+		
+		Integer intervalsBefore = null;
+		int intervalsAfter = 0;
+		
+		for (List<TimePoint> groupA : groups.firstGroup){
+			int tb = 0;
+			int ta = 0;
+			for (TimePoint point : groupA){
+				if (point.getTimeIndex() < timeIndexTransition){
+					sumABefore += point.getValue();
+					tb++;
+				}else{
+					sumAAfter += point.getValue();
+					ta++;
+				}
+			}
+			if (intervalsBefore == null){
+				intervalsBefore = tb;
+				intervalsAfter = ta;
+			}else{
+				if (intervalsBefore != tb){
+					throw new IllegalArgumentException("problem with the data");
+				}
+				if (intervalsAfter != ta){
+					throw new IllegalArgumentException("problem with the data");
+				}
+			}
+		}
+		
+		for (List<TimePoint> groupB : groups.secondGroup){
+			int tb = 0;
+			int ta = 0;
+			for (TimePoint point : groupB){
+				if (point.getTimeIndex() < timeIndexTransition){
+					sumBBefore += point.getValue();
+					tb++;
+				}else{
+					sumBAfter += point.getValue();
+					ta++;
+				}
+			}
+			if (intervalsBefore != tb){
+				throw new IllegalArgumentException("problem with the data");
+			}
+			if (intervalsAfter != ta){
+				throw new IllegalArgumentException("problem with the data");
+			}
+		}
+		
+		double out = (sumABefore/sumBBefore)/(sumBAfter/sumAAfter);
+		
+		return out;
 	}
 
 	private static Groups shuffle(Groups groups, int timeIndexTransition) {
-
-		return null;
+		//we shuffle the user and then we shuffle 
+		
+		List<List<TimePoint>> allUsers = new ArrayList<List<TimePoint>>();
+		allUsers.addAll(groups.firstGroup);
+		allUsers.addAll(groups.secondGroup);
+		
+		List<List<TimePoint>> newGroupA = new ArrayList<List<TimePoint>>();
+		List<List<TimePoint>> newGroupB = new ArrayList<List<TimePoint>>();
+		
+		Set<Integer> usedIndeces = new HashSet<Integer>();
+		final int size = allUsers.size();
+		final int sizeA = groups.firstGroup.size();
+		while (newGroupA.size() < sizeA){
+			int sampleIndex = RAND.nextInt(size);
+			if (!usedIndeces.contains(sampleIndex)){
+				usedIndeces.add(sampleIndex);
+				newGroupA.add(allUsers.get(sampleIndex));
+			}
+		}
+		newGroupB.addAll(allUsers);
+		newGroupB.removeAll(newGroupA);
+		
+		List<List<TimePoint>> newGroupAShuffledDays = new ArrayList<List<TimePoint>>();
+		List<List<TimePoint>> newGroupBShuffledDays = new ArrayList<List<TimePoint>>();
+		
+		for (List<TimePoint>  userPoint : newGroupA){
+			newGroupAShuffledDays.add(shuffle(userPoint));
+		}
+		for (List<TimePoint>  userPoint : newGroupB){
+			newGroupBShuffledDays.add(shuffle(userPoint));
+		}
+		
+		return new Groups(newGroupAShuffledDays, newGroupBShuffledDays);
+	}
+	
+	private static List<TimePoint> shuffle(List<TimePoint> points){
+		List<TimePoint> out = new ArrayList<TimePoint>();
+		
+		List<Double> values = new ArrayList<Double>();
+		for (TimePoint point : points){
+			values.add(point.getValue());
+		}
+		
+		for (TimePoint point : points){
+			int pos = RAND.nextInt(values.size());
+			out.add(new TimePoint(point.getTimeIndex(),values.get(pos)));
+			values.remove(pos);
+		}
+		return out;
 	}
 
 	private static class Groups {

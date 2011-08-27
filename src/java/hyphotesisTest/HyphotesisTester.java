@@ -24,8 +24,9 @@ public interface HyphotesisTester {
 	
 	/**
 	 * checks if there is any difference in between period a and b
-	 * of ( sum_groupa_before /sum_groupb_before)/(sum_groupb_after/ sum_groupa_after)
+	 * of ( (sum_groupa_before) /(sum_groupb_before))/((sum_groupb_after)/( sum_groupa_after))
 	 * that cannot be explained by randomization over user and days
+	 * NOTE:  all users needs to have the same set of time indeces
 	 * @param firstGroup
 	 * @param secondGroup
 	 * @param timeIndexTransition
