@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class HyphotesisTesterImpl implements HyphotesisTester {
 
-	private final static int DEFAULT_RUNS = 100000;
+	private final static int DEFAULT_RUNS = 10000;
 	private final static Random RAND = new Random();
 
 	private int runs = DEFAULT_RUNS;
@@ -98,6 +98,13 @@ public class HyphotesisTesterImpl implements HyphotesisTester {
 				FakeSeries.getTransitionPoint());
 
 		System.out.println(result);
+	}
+
+	@Override
+	public HyphotesisResult test(List<List<TimePoint>> firstGroup,
+			List<List<TimePoint>> secondGroup) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

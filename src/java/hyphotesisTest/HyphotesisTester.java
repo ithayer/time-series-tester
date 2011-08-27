@@ -3,7 +3,6 @@ package hyphotesisTest;
 import java.util.List;
 
 public interface HyphotesisTester {
-
 	
 	/**
 	 * test hyphotesis that the firt period ( timeIndex < timeIndexTransition ) is differnt from second
@@ -14,13 +13,13 @@ public interface HyphotesisTester {
 	 */
 	HyphotesisResult test(List<TimePoint> series, int timeIndexTransition);
 	
-	
-	
-	
-	
-	
-	
-	
+	/**
+	 * 
+	 * @param firstGroup
+	 * @param secondGroup
+	 * @return
+	 */
+	HyphotesisResult test(List<List<TimePoint>> firstGroup, List<List<TimePoint>> secondGroup);
 	
 	
 }
