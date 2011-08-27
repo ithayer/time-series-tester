@@ -79,11 +79,8 @@ public class HyphotesisTesterImpl implements HyphotesisTester {
 				}
 			}
 		}
-
 		double pValue = ((double) moreExtremeSample) / ((double) runs);
-		
-
-		return new HyphotesisResult(firstPeriodHigher, pValue);
+		return new HyphotesisResult(firstPeriodHigher, pValue, averageBefore, averageAfter);
 	}
 
 	public void setRuns(int runs) {
