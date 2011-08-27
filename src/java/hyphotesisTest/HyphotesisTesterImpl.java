@@ -70,11 +70,11 @@ public class HyphotesisTesterImpl implements HyphotesisTester {
 			double randomDiff = randomAverageBefore - randomAverageAfter;
 
 			if (firstPeriodHigher) {
-				if (randomDiff > diff) {
+				if (randomDiff >= diff) {
 					moreExtremeSample++;
 				}
 			} else {
-				if (randomDiff < diff) {
+				if (randomDiff <= diff) {
 					moreExtremeSample++;
 				}
 			}
