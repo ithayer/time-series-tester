@@ -1,5 +1,6 @@
 package hyphotesisTest;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -103,8 +104,27 @@ public class HyphotesisTesterImpl implements HyphotesisTester {
 	@Override
 	public HyphotesisResult test(List<List<TimePoint>> firstGroup,
 			List<List<TimePoint>> secondGroup) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		List<TimePoint> allUsers = new ArrayList<TimePoint>(); //alle theusers group a before and goup b after
+		
+		int index = 0;
+		for (List<TimePoint> user : firstGroup){
+			allUsers.add(aggregate(user, index));
+			index++;
+		}
+		for (List<TimePoint> user : secondGroup){
+			allUsers.add(aggregate(user, index));
+			index++;
+		}
+		return this.test(allUsers, firstGroup.size());
 	}
 
+	private static TimePoint aggregate(List<TimePoint> user, int index){
+		double value = 0.0;
+		for (TimePoint point : user){
+			value += point.getValue();
+		}
+		return new TimePoint(index, value);
+	}
+	
 }
