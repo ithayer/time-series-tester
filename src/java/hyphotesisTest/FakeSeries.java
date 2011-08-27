@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class FakeSeries {
 	
-	public static int size = 10;
+	public static int size = 1000;
 	
 	private final static Random RAND = new Random();
 	
@@ -17,5 +17,9 @@ public class FakeSeries {
 			series.add(new TimePoint(i, RAND.nextDouble()));
 		}
 		return series;
+	}
+	
+	public static int getTransitionPoint(){
+		return size /2; // doesn't have to be in the middle
 	}
 }
